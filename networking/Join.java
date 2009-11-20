@@ -5,19 +5,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.SocketAddress;
 
 public class Join implements Message {
 
     private MessageType type = MessageType.JOIN;
     public String clientHandle;
     public String password;
+    public String clientAddress;
+    public int clientPort;
 
     // constructors
-    public Join(String clientHandle, String password) {
+    public Join(String clientHandle, String password, String clientAddress) {
         // REQUIRES: clientHandle is not null, password is not null
         // EFFECTS: Constructs a new Join with the given data
         this.clientHandle = clientHandle;
         this.password = password;
+        this.clientAddress = clientAddress;
+        this.clientPort = clientPort;
     }
 
     public Join(DataInputStream stream) throws IOException {
@@ -26,6 +31,8 @@ public class Join implements Message {
         // if there was a problem parsing the required fields
         clientHandle = MessageParser.readString(stream);
         password = MessageParser.readString(stream);
+        clientAddress = MessageParser.readString(stream);
+        clientPort = Integer.parseInt(MessageParser.readString(stream));
     }
 
     public byte[] getBytes() throws IOException {
@@ -36,6 +43,8 @@ public class Join implements Message {
         stream.writeInt(type.id);
         MessageParser.writeString(stream, clientHandle);
         MessageParser.writeString(stream, password);
+        MessageParser.writeString(stream, clientAddress);
+        MessageParser.writeString(stream, Integer.toString(clientPort));
         stream.flush();
         
         return byte_out.toByteArray();

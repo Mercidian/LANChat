@@ -4,7 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Time {
-	public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+	//public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_FORMAT_NOW = "HH:mm:ss";
 	
 	public Time(){
 		super();

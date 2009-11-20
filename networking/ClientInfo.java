@@ -5,12 +5,16 @@ import java.net.SocketAddress;
 
 public class ClientInfo {
 	//DataType
-	public String nickname;
-	SocketAddress clientAddress;
-	public String password;
+	public String clientHandle;
+	public String clientAddress;
+	public int clientPort;
+	public InetSocketAddress clientSocket;
 	
-	public ClientInfo(){
+	public ClientInfo(String clientHandle, String clientAddress, int clientPort){
 		super();
+		this.clientHandle = clientHandle;
+		this.clientAddress = clientAddress;
+		this.clientPort = clientPort;
+		clientSocket = new InetSocketAddress(clientAddress, clientPort);
 	}
-
 }

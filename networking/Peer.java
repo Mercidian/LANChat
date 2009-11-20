@@ -27,6 +27,8 @@ public class Peer extends Thread {
 
 		socket = new DatagramSocket();
         this.serverAddress = new InetSocketAddress(serverAddress, serverPort);
+        
+        System.out.println(this.serverAddress.toString());
 
 		if(!this.serverAddress.getAddress().isReachable(3)) {
 			System.out.println("Warning: server is not reachable");
@@ -38,13 +40,15 @@ public class Peer extends Thread {
         // EFFECTS: Initializes this with a new socket and sets the server address
         // to it's own address
         socket = new DatagramSocket(serverPort);
-        this.serverAddress = (InetSocketAddress)socket.getLocalSocketAddress();
+        this.serverAddress = new InetSocketAddress("192.168.111.102", serverPort);
+        //this.serverAddress = (InetSocketAddress)socket.getLocalSocketAddress();
     }
 
 	public void send(Message message)
 		throws IOException {
         // REQUIRES: data is not null
         // EFFECTS: Encapsulates data in a datagram and sends to the server
+		System.out.println("Peer");
         this.sendTo(message, this.serverAddress);
 	}
 	

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import networking.Announce;
 import networking.ChannelUpdate;
+import networking.Client;
 import networking.Join;
 import networking.Message;
 import networking.Peer;
@@ -37,20 +38,28 @@ public class Testing {
 
 		System.out.println(addr1.equals(addr2));
 		
-		// Setup a peer that acts like a server
-        Peer peer = new Peer(64000);
+		// Setup a server
+		Peer peer = new Server(64000, "name", "pw");
         peer.setDaemon(true);
         peer.start();
         
+        /*
+        // Setup a client
+        Peer peer = new Client("192.168.111.102", 64000, "name", "pw");
+        peer(true);
+        peer();*/
+        
         Message[] messages = {new TextMessage("rob", "message1", "password"),
+        					  new TextMessage("will", "message2", "password"),
         					  new ChannelUpdate("rob", "message2", new Date()),
         					  new Announce("server1", ((InetSocketAddress)peer.getLocalSocketAddress()).getHostName(), 64000, 0, true),
-        					  new Join("rob", "password"),
+        					  new Join("rob", "pw", "127.0.0.1"),
+        					  new Join("will", "pw", "127.0.0.1"),
         					  new Refuse("Invalid Password")};
 
         // Send some messages to ourself
         for(Message message : messages) {
-            peer.send(message);
+        	peer.send(message);
         }
 
         String mAddr = "230.0.0.1";
