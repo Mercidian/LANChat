@@ -4,7 +4,9 @@ package networking;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 
@@ -27,12 +29,14 @@ public class Peer extends Thread {
 
 		socket = new DatagramSocket();
         this.serverAddress = new InetSocketAddress(serverAddress, serverPort);
-        
-        System.out.println(this.serverAddress.toString());
 
-		if(!this.serverAddress.getAddress().isReachable(3)) {
+		if(!this.serverAddress.getAddress().isReachable(10)) {
 			System.out.println("Warning: server is not reachable");
 		}
+	}
+	
+	public int getPort(){
+		return socket.getLocalPort();
 	}
 
     public Peer(int serverPort) throws SocketException {
@@ -48,7 +52,6 @@ public class Peer extends Thread {
 		throws IOException {
         // REQUIRES: data is not null
         // EFFECTS: Encapsulates data in a datagram and sends to the server
-		System.out.println("Peer");
         this.sendTo(message, this.serverAddress);
 	}
 	
@@ -77,7 +80,6 @@ public class Peer extends Thread {
         
         while(true) {
             try {
-
                 System.out.println("Peer: listening for messages");
                 packet = this.receiveData();
 

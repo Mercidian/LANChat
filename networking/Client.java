@@ -50,7 +50,7 @@ public class Client extends Peer{
 	
 	@Override
 	protected void handleMessage(Message message) {
-		//System.out.println("Peer: received a " + message.getType());
+		System.out.println("Peer: received a " + message.getType());
         switch(message.getType()) {
 	        case TEXT_MESSAGE:
 	            break;

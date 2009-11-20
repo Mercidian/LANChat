@@ -16,7 +16,7 @@ public class Join implements Message {
     public int clientPort;
 
     // constructors
-    public Join(String clientHandle, String password, String clientAddress) {
+    public Join(String clientHandle, String password, String clientAddress, int clientPort) {
         // REQUIRES: clientHandle is not null, password is not null
         // EFFECTS: Constructs a new Join with the given data
         this.clientHandle = clientHandle;

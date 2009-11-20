@@ -29,7 +29,7 @@ public class Server extends Peer{
 
 //Client List Stuff
 	public boolean addClient(ClientInfo client){
-		//TODO: Check client is valid and return false if invalid
+		System.out.println(client.clientHandle + " " + client.clientAddress + " " + client.clientPort);
 		clientList.add(client);
 		return true;
 	}
@@ -50,22 +50,21 @@ public class Server extends Peer{
 	}
 
 //Server Send/Recv Stuff
-	/*
+	@Override
 	public void send(Message message) throws IOException{
 		//Send to all clients
-		if(message.getType()==MessageType.CHANNEL_UPDATE){
+		if(message.getType()==MessageType.TEXT_MESSAGE){
 			Iterator<ClientInfo> itr = clientList.iterator();
+			int i=0;
 			while( itr.hasNext() ){
-				//TODO: Form packet with msg and send to client
 				sendTo(message, itr.next().clientSocket);
 			}
 		}
 	}
-	*/
 	
 	public void receive(Message message) throws IOException{
 	//Receive message from client
-		//send(message);
+		this.send(message);
 		String s = msgParse(message);
 		display(s);
 	}
@@ -88,11 +87,10 @@ public class Server extends Peer{
 	
 	@Override
 	protected void handleMessage(Message message) {
-
-        //System.out.println("Peer: received a " + message.getType());
         switch(message.getType()) {
 	        case TEXT_MESSAGE:
 	        	try{
+	        		System.out.println("text");
 	        		receive(message);
 	        	} catch(IOException e){
 	        		
@@ -106,6 +104,7 @@ public class Server extends Peer{
 				Join m = (Join)message;
 				if(m.password.equals(this.password)){
 					addClient(new ClientInfo(m.clientHandle, m.clientAddress, m.clientPort) );
+					System.out.println("clients: " + getNumMembers());
 				}
 				else{
 					try {
@@ -115,7 +114,6 @@ public class Server extends Peer{
 						e.printStackTrace();
 					}     
 				}
-				System.out.println("clients: " + getNumMembers());
 				break;
 			case REFUSE:
 	        	break;
