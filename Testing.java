@@ -61,6 +61,7 @@ public class Testing {
         finder.addServerListener(listener);
         finder.start();
 
+        /*
         Server server = new Server("Server1", 1600, false);
         ServerAnnouncer announcer = new ServerAnnouncer(mAddr, mPort, 1000, server);
         announcer.start();
@@ -69,6 +70,7 @@ public class Testing {
         	Thread.sleep(200);
         	server.setNumMembers(server.getNumMembers() + 1);
         }
+        */
 	}
 
 }

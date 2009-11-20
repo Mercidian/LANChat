@@ -99,7 +99,7 @@ public class Peer extends Thread {
 		return socket.getLocalSocketAddress();
 	}
 
-    private void handleMessage(Message message) {
+    protected void handleMessage(Message message) {
 
         System.out.println("Peer: received a " + message.getType());
         switch(message.getType()) {
