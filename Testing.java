@@ -1,11 +1,9 @@
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Date;
 
 import networking.Announce;
 import networking.ChannelUpdate;
-import networking.Client;
 import networking.Join;
 import networking.Message;
 import networking.Peer;
@@ -33,36 +31,22 @@ public class Testing {
 
 	public static void main(String[] args) throws InterruptedException, IOException {
 
-		SocketAddress addr1 = new InetSocketAddress("192.168.2.0", 49000);
-		SocketAddress addr2 = new InetSocketAddress("192.168.2.0", 48000);
+        Message[] messages = {new TextMessage("rob", "message1", "password"),
+        					  new ChannelUpdate("rob", "message2", new Date()),
+        					  new Announce("server1", 64000, 0, true),
+        					  new Join("rob", "password"),
+        					  new Refuse("Invalid Password")};
 
-		System.out.println(addr1.equals(addr2));
-		/*
-		// Setup a server
-		Peer peer1 = new Server(64000, "name", "pw");
-        peer1.setDaemon(true);
-        peer1.start();
-        */
-        
-        // Setup a client
-        Peer peer = new Client("192.168.111.102", 54000, "name", "pw");
+        // Setup a peer that acts like a server
+        Server peer = new Server(64000, "name", "pw");
         peer.setDaemon(true);
         peer.start();
-        
-        Message[] messages = {new Join("rob", "pw", "192.168.111.101", peer.getPort()),
-        					  new TextMessage("rob", "message1", "password"),
-        					  new TextMessage("will", "message2", "password"),
-        					  new ChannelUpdate("rob", "message2", new Date()),
-        					  new Announce("server1", ((InetSocketAddress)peer.getLocalSocketAddress()).getHostName(), 64000, 0, true),
-        					  new Refuse("Invalid Password")};
 
         // Send some messages to ourself
         for(Message message : messages) {
-        	peer.send(message);
+            peer.send(message);
         }
-        
-        while(true);
-/*
+
         String mAddr = "230.0.0.1";
         int mPort = 45000;
 

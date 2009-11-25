@@ -4,9 +4,7 @@ package networking;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 
@@ -30,13 +28,9 @@ public class Peer extends Thread {
 		socket = new DatagramSocket();
         this.serverAddress = new InetSocketAddress(serverAddress, serverPort);
 
-		if(!this.serverAddress.getAddress().isReachable(10)) {
+		if(!this.serverAddress.getAddress().isReachable(3)) {
 			System.out.println("Warning: server is not reachable");
 		}
-	}
-	
-	public int getPort(){
-		return socket.getLocalPort();
 	}
 
     public Peer(int serverPort) throws SocketException {
@@ -44,8 +38,7 @@ public class Peer extends Thread {
         // EFFECTS: Initializes this with a new socket and sets the server address
         // to it's own address
         socket = new DatagramSocket(serverPort);
-        this.serverAddress = new InetSocketAddress("192.168.111.102", serverPort);
-        //this.serverAddress = (InetSocketAddress)socket.getLocalSocketAddress();
+        this.serverAddress = (InetSocketAddress)socket.getLocalSocketAddress();
     }
 
 	public void send(Message message)
@@ -80,6 +73,7 @@ public class Peer extends Thread {
         
         while(true) {
             try {
+
                 System.out.println("Peer: listening for messages");
                 packet = this.receiveData();
 
@@ -105,7 +99,7 @@ public class Peer extends Thread {
 		return socket.getLocalSocketAddress();
 	}
 
-    protected void handleMessage(Message message) {
+	protected void handleMessage(Message message) {
 
         System.out.println("Peer: received a " + message.getType());
         switch(message.getType()) {

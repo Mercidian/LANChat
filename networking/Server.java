@@ -2,10 +2,6 @@ package networking;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,23 +9,19 @@ import java.util.Iterator;
 public class Server extends Peer{
 	
 	private ArrayList<ClientInfo> clientList;
-	protected int serverPort;
-	protected String serverName;
-	protected String password;
-	protected boolean needsPassword;
+	String name;
+	String password;
 	
-	public Server(int serverPort, String serverName, String password) throws SocketException {
+	public Server(int serverPort, String name, String password) throws SocketException {
 		super(serverPort);
 		clientList = new ArrayList<ClientInfo>();
-		this.serverPort=serverPort;
-		this.serverName=serverName;
+		this.name=name;
 		this.password=password;
-		needsPassword=password=="";
 	}
 
 //Client List Stuff
 	public boolean addClient(ClientInfo client){
-		System.out.println(client.clientHandle + " " + client.clientAddress + " " + client.clientPort);
+		//TODO: Check client is valid and return false if invalid
 		clientList.add(client);
 		return true;
 	}
@@ -41,30 +33,25 @@ public class Server extends Peer{
 		return true;
 	}
 	
-	public int getNumMembers(){
-		return clientList.size();
-	}
-	
 	public void setPassword(String password){
 		this.password = password;
 	}
 
 //Server Send/Recv Stuff
-	@Override
 	public void send(Message message) throws IOException{
 		//Send to all clients
-		if(message.getType()==MessageType.TEXT_MESSAGE){
+		if(message.getType()==MessageType.CHANNEL_UPDATE){
 			Iterator<ClientInfo> itr = clientList.iterator();
-			int i=0;
 			while( itr.hasNext() ){
-				sendTo(message, itr.next().clientSocket);
+				//TODO: Form packet with msg and send to client
+				sendTo(message, itr.next().clientAddress);
 			}
 		}
 	}
 	
 	public void receive(Message message) throws IOException{
-	//Receive message from client
-		this.send(message);
+		//Receive message from client
+		send(message);
 		String s = msgParse(message);
 		display(s);
 	}
@@ -76,7 +63,7 @@ public class Server extends Peer{
 	private static String msgParse(Message message){
 		//TODO: format msg properly
 		TextMessage m = (TextMessage)message;
-		String s = (Time.time() + " " + m.clientHandle + " " + m.message);
+		String s = (Time.time() + m.clientHandle + " " + m.message);
 		return s;
 	}
 	
@@ -87,36 +74,27 @@ public class Server extends Peer{
 	
 	@Override
 	protected void handleMessage(Message message) {
+
+        System.out.println("Peer: received a " + message.getType());
         switch(message.getType()) {
-	        case TEXT_MESSAGE:
-	        	try{
-	        		System.out.println("text");
-	        		receive(message);
-	        	} catch(IOException e){
-	        		
-	        	}
-	        	break;
-	        case CHANNEL_UPDATE:
-	        	break;
-	        case ANNOUNCE:
-	        	break;
+        	/*
 			case JOIN:
-				Join m = (Join)message;
-				if(m.password.equals(this.password)){
-					addClient(new ClientInfo(m.clientHandle, m.clientAddress, m.clientPort) );
-					System.out.println("clients: " + getNumMembers());
-				}
-				else{
-					try {
-						super.sendTo(new Refuse("Invalid Password"), new InetSocketAddress(m.clientAddress, m.clientPort));
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}     
-				}
-				break;
-			case REFUSE:
-	        	break;
+				if(message.password == this.password)
+					ClientInfo client = new ClientInfo();
+					client.clientAddress = message.ipAddr;
+					addClient(client);
+				else
+					Refuse msg = new Refuse("");
+					super.sendTo(message.ipAddr, msg);
+        	*/     
+            case TEXT_MESSAGE:
+            	try{
+            		receive(message);
+            	} catch(IOException e){
+            		
+            	}
+                //TextMessage txt = (TextMessage)message;
+                //System.out.println(String.format("[TextMessage] %s: %s", txt.clientHandle, txt.message));
             default:
             	System.out.println("Peer: received a " + message.getType());
         }

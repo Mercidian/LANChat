@@ -18,18 +18,16 @@ public class Announce implements Message {
 
     private MessageType type = MessageType.ANNOUNCE;
     public String serverName;
-    public String serverAddress;
     public int serverPort;
     public int numMembers;
     public boolean needsPassword;
 
 
     // constructors
-    public Announce(String serverName, String serverAddress, int serverPort, int numMembers, boolean needsPassword) {
+    public Announce(String serverName, int serverPort, int numMembers, boolean needsPassword) {
         // REQUIRES: clientHandle is not null, message is not null
         // EFFECTS: Constructs a new Announce with the given data
         this.serverName = serverName;
-        this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         this.numMembers = numMembers;
         this.needsPassword = needsPassword;
@@ -40,7 +38,6 @@ public class Announce implements Message {
         // EFFECTS: Parses a new Announce from the given stream, or throws IOException
         // if there was a problem parsing the required fields
         serverName = MessageParser.readString(stream);
-        serverAddress = MessageParser.readString(stream);
         serverPort = stream.readInt();
         numMembers = stream.readInt();
         needsPassword = stream.readBoolean();
@@ -53,7 +50,6 @@ public class Announce implements Message {
 
         stream.writeInt(type.id);
         MessageParser.writeString(stream, serverName);
-        MessageParser.writeString(stream, serverAddress);
         stream.writeInt(serverPort);
         stream.writeInt(numMembers);
         stream.writeBoolean(needsPassword);
